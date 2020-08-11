@@ -26,7 +26,7 @@ fn main() {
     }
 
     // Add the month to the path.
-    base_path.push(day.month().to_string());
+    base_path.push(month(day.month()));
     if !base_path.is_dir() {
         execute("mkdir", base_path.to_str().expect("Not valid"))
     }
@@ -35,7 +35,13 @@ fn main() {
     base_path.push(day.day().to_string());
 
     // Execute the combined command
-    execute("mousepad", base_path.to_str().expect("Not valid"))
+    execute("mousepad", base_path.to_str().expect("Not valid"));
+    println!(
+        "Opening journal entry for {}, {} {}...",
+        day.year(),
+        month(day.month()),
+        day.day()
+    );
 }
 
 fn execute(command: &str, arg: &str) {
@@ -43,4 +49,23 @@ fn execute(command: &str, arg: &str) {
         .arg(&arg)
         .spawn()
         .expect(&format!("Command {} {} failed", command, arg));
+}
+
+fn month(num: u32) -> String {
+    match num {
+        1 => "January",
+        2 => "February",
+        3 => "March",
+        4 => "April",
+        5 => "May",
+        6 => "June",
+        7 => "July",
+        8 => "August",
+        9 => "September",
+        10 => "October",
+        11 => "November",
+        12 => "December",
+        _ => "Not a month",
+    }
+    .to_string()
 }
