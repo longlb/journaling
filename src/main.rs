@@ -1,27 +1,30 @@
 use chrono::prelude::*;
 use std::env;
+use std::path::Path;
 use std::process::Command;
 
 fn main() {
-    // Record the values of the current day.
-    let now = Local::now();
-    let entry = format!("/home/longlb/Documents/journal/{}", now.format("%Y-%m-%d"));
-
-    // let (year, month, day) = (now.year(), now.month(), now.day());
+    // Get today's date.
+    let today = Local::today();
+    let path = Path::new("/home/longlb/Documents/journal");
 
     // Taking the argument following the journal command.
-    // let args: Vec<String> = env::args().collect();
-    // if args.len() == 1 {
-    //     println!("present day.");
-    // } else {
-    //     match args[1].as_str() {
-    //         "today" => println!("today {:?} {} {}", year, month, day),
-    //         "tomorrow" => println!("tmr {}", now),
-    //         "yesterday" => println!("ystdy {}", now),
-    //         _ => println!("nuthin"),
-    //     }
-    // }
+    let args: Vec<String> = env::args().collect();
+    let second = match args.len() {
+        1 => "today",
+        _ => &args[1],
+    };
+    let attachment = match second {
+        "today" => today.format("%Y-%m-%d"),
+        "tomorrow" => (today + chrono::Duration::days(1)).format("%Y-%m-%d"),
+        "yesterday" => (today - chrono::Duration::days(1)).format("%Y-%m-%d"),
+        _ => today.format("%Y-%m-%d"),
+    };
 
+    let entry = format!("{}/{}", path.to_str().unwrap(), attachment);
+    println!("{}", entry);
+
+    // Execute combined command
     Command::new("mousepad")
         .arg(entry)
         .spawn()
