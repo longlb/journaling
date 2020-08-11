@@ -1,32 +1,46 @@
 use chrono::prelude::*;
 use std::env;
-use std::path::Path;
+use std::path::PathBuf;
 use std::process::Command;
 
 fn main() {
-    // Get today's date.
-    let today = Local::today();
-    let path = Path::new("/home/longlb/Documents/journal");
+    // Initialize the general journal path and today's date.
+    let mut base_path = PathBuf::from("/home/longlb/Documents/journal");
+    let mut day = Local::today();
 
-    // Taking the argument following the journal command.
+    // Adjust the day based on the extra arguments given, if there are any.
     let args: Vec<String> = env::args().collect();
-    let second = match args.len() {
-        1 => "today",
-        _ => &args[1],
-    };
-    let attachment = match second {
-        "today" => today.format("%Y-%m-%d"),
-        "tomorrow" => (today + chrono::Duration::days(1)).format("%Y-%m-%d"),
-        "yesterday" => (today - chrono::Duration::days(1)).format("%Y-%m-%d"),
-        _ => today.format("%Y-%m-%d"),
-    };
+    if args.len() > 1 {
+        day = day
+            + match args[1].as_str() {
+                "tomorrow" => chrono::Duration::days(1),
+                "yesterday" => chrono::Duration::days(-1),
+                _ => chrono::Duration::days(0),
+            };
+    }
 
-    let entry = format!("{}/{}", path.to_str().unwrap(), attachment);
-    println!("{}", entry);
+    // Add the year to the path.
+    base_path.push(day.year().to_string());
+    if !base_path.is_dir() {
+        execute("mkdir", base_path.to_str().expect("Not valid"))
+    }
 
-    // Execute combined command
-    Command::new("mousepad")
-        .arg(entry)
+    // Add the month to the path.
+    base_path.push(day.month().to_string());
+    if !base_path.is_dir() {
+        execute("mkdir", base_path.to_str().expect("Not valid"))
+    }
+
+    // Add the day to the path.
+    base_path.push(day.day().to_string());
+
+    // Execute the combined command
+    execute("mousepad", base_path.to_str().expect("Not valid"))
+}
+
+fn execute(command: &str, arg: &str) {
+    Command::new(command)
+        .arg(&arg)
         .spawn()
-        .expect("Cannot open journal");
+        .expect(&format!("Command {} {} failed", command, arg));
 }
