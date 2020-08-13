@@ -1,50 +1,16 @@
 use chrono::prelude::*;
-use regex::Regex;
-use std::io::{Error, ErrorKind};
-use std::path::PathBuf;
+// use regex::Regex;
 use std::process::Command;
 use std::{env, io};
 
+mod entrypath;
+use entrypath::EntryPath;
 // let re = Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
 // assert!(re.is_match("2014-01-01"));
 // let re = Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
 //     if args.len() > 1 {
 //         if re.is_match(&args[1]) {
 //         }
-
-struct EntryPath {
-    path: PathBuf,
-}
-
-impl EntryPath {
-    fn new() -> Self {
-        Self {
-            path: PathBuf::from("/home/longlb/Documents/journal"),
-        }
-    }
-
-    fn add_dir(&mut self, dir: String) -> io::Result<()> {
-        self.path.push(dir);
-        if !self.path.is_dir() {
-            execute("mkdir", self.to_str()?)?;
-        }
-        Ok(())
-    }
-
-    fn add_file(&mut self, file: String) -> io::Result<()> {
-        self.path.push(file);
-        if !self.path.is_file() {
-            execute("touch", self.to_str()?)?;
-        }
-        Ok(())
-    }
-
-    fn to_str(&self) -> io::Result<&str> {
-        self.path
-            .to_str()
-            .ok_or(Error::new(ErrorKind::Other, "Path has invalid unicode"))
-    }
-}
 
 fn main() -> io::Result<()> {
     // Initialize the general journal path and the entry date based on user input..
