@@ -1,54 +1,67 @@
 use chrono::prelude::*;
+use regex::Regex;
+use std::io::{Error, ErrorKind};
 use std::path::PathBuf;
 use std::process::Command;
 use std::{env, io};
 
-// TODO
-// Opening an entry by specific date
-// Opening a random journal entry
-// Optimization
-// Uses system text editor rather than mousepad?
-// Functionality for fully usable on any system? (Directories and such)
+// let re = Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
+// assert!(re.is_match("2014-01-01"));
+// let re = Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
+//     if args.len() > 1 {
+//         if re.is_match(&args[1]) {
+//         }
 
-struct Temp {
-    base_path: PathBuf,
-    day: Date<Local>,
+struct EntryPath {
+    path: PathBuf,
 }
 
-impl Temp {
+impl EntryPath {
     fn new() -> Self {
         Self {
-            base_path: PathBuf::from("/home/longlb/Documents/journal"),
-            day: get_day(),
+            path: PathBuf::from("/home/longlb/Documents/journal"),
         }
+    }
+
+    fn add_dir(&mut self, dir: String) -> io::Result<()> {
+        self.path.push(dir);
+        if !self.path.is_dir() {
+            execute("mkdir", self.to_str()?)?;
+        }
+        Ok(())
+    }
+
+    fn add_file(&mut self, file: String) -> io::Result<()> {
+        self.path.push(file);
+        if !self.path.is_file() {
+            execute("touch", self.to_str()?)?;
+        }
+        Ok(())
+    }
+
+    fn to_str(&self) -> io::Result<&str> {
+        self.path
+            .to_str()
+            .ok_or(Error::new(ErrorKind::Other, "Path has invalid unicode"))
     }
 }
 
-// println!(
-//     "Opening journal entry for {}, {} {}...",
-//     day.year(),
-//     month(day.month()),
-//     day.day()
-// );
-
 fn main() -> io::Result<()> {
     // Initialize the general journal path and the entry date based on user input..
-    let mut path = PathBuf::from("/home/longlb/Documents/journal");
+    let mut path = EntryPath::new();
     let day = get_day();
 
     // Enter the day's year and month directories.
-    check_add_dir(&mut path, day.year().to_string())?;
-    check_add_dir(&mut path, month(day.month()))?;
+    path.add_dir(day.year().to_string())?;
+    path.add_dir(month(day.month()))?;
 
     // Add the day to the path.
-    path.push(day.day().to_string());
+    path.add_file(day.day().to_string())?;
 
     // Execute the combined command.
-    execute("mousepad", path_str(&path))?;
+    execute("mousepad", path.to_str()?)?;
     Ok(())
 }
-
-// fn main() -> io::Result<()> {}
 
 // Return the day based on the user's input.
 fn get_day() -> Date<Local> {
@@ -65,25 +78,11 @@ fn get_day() -> Date<Local> {
     day
 }
 
-// Attach a directory to the given path and generate it if if doesn't exist.
-fn check_add_dir(path: &mut PathBuf, dir: String) -> io::Result<()> {
-    path.push(dir);
-    if !path.is_dir() {
-        execute("mkdir", path_str(path))?;
-    }
-    Ok(())
-}
-
+// ----- Helper Functions -----
 // Execute a linux command with a single argument.
 fn execute(command: &str, arg: &str) -> io::Result<()> {
     Command::new(command).arg(arg).spawn()?;
     Ok(())
-}
-
-// ----- Minor Helper Functions -----
-// Get the &str representation of a path.
-fn path_str(path: &PathBuf) -> &str {
-    path.to_str().expect("Path has invalid unicode")
 }
 
 // Return the month name of valid month number.
