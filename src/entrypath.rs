@@ -35,3 +35,5 @@ impl EntryPath {
             .ok_or(Error::new(ErrorKind::Other, "Path has invalid unicode"))
     }
 }
+
+#[cfg()]
