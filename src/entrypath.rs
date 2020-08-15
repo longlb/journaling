@@ -1,5 +1,5 @@
 use super::execute;
-use std::io::{Error, ErrorKind, Result};
+use std::io;
 use std::path::PathBuf;
 
 pub struct EntryPath {
@@ -9,11 +9,12 @@ pub struct EntryPath {
 impl EntryPath {
     pub fn new() -> Self {
         Self {
+            // It's possible to use dirs crate for home directory variable rather than hard code.
             path: PathBuf::from("/home/longlb/Documents/journal"),
         }
     }
 
-    pub fn add_dir(&mut self, dir: String) -> Result<()> {
+    pub fn add_dir(&mut self, dir: String) -> io::Result<()> {
         self.path.push(dir);
         if !self.path.is_dir() {
             execute("mkdir", self.to_str()?)?;
@@ -21,7 +22,7 @@ impl EntryPath {
         Ok(())
     }
 
-    pub fn add_file(&mut self, file: String) -> Result<()> {
+    pub fn add_file(&mut self, file: String) -> io::Result<()> {
         self.path.push(file);
         if !self.path.is_file() {
             execute("touch", self.to_str()?)?;
@@ -29,11 +30,12 @@ impl EntryPath {
         Ok(())
     }
 
-    pub fn to_str(&self) -> Result<&str> {
-        self.path
-            .to_str()
-            .ok_or(Error::new(ErrorKind::Other, "Path has invalid unicode"))
+    pub fn to_str(&self) -> io::Result<&str> {
+        self.path.to_str().ok_or(io::Error::new(
+            io::ErrorKind::Other,
+            "Path has invalid unicode",
+        ))
     }
 }
 
-#[cfg()]
+// #[cfg()]
