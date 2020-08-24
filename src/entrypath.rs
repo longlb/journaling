@@ -1,5 +1,6 @@
 use super::execute;
 use std::io;
+use std::io::{Error, ErrorKind};
 use std::path::PathBuf;
 
 pub struct EntryPath {
@@ -31,10 +32,9 @@ impl EntryPath {
     }
 
     pub fn to_str(&self) -> io::Result<&str> {
-        self.path.to_str().ok_or(io::Error::new(
-            io::ErrorKind::Other,
-            "Path has invalid unicode",
-        ))
+        self.path
+            .to_str()
+            .ok_or(Error::new(ErrorKind::Other, "Path has invalid unicode"))
     }
 }
 
