@@ -5,9 +5,8 @@
 
 TODO:
 
-~~- Opening an entry by specific date~~
-~~- Optimization~~
-
+- ~~Opening an entry by specific date~~
+- ~~Optimization~~
 - Opening a random journal entry
 - Uses system text editor rather than mousepad?
 - Functionality for fully usable on any system? (Directories and such)
