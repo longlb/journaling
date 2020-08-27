@@ -7,7 +7,11 @@ TODO:
 
 - ~~Opening an entry by specific date~~
 - ~~Optimization~~
-- Opening a random journal entry
-- Uses system text editor rather than mousepad?
+- ~~Opening a random journal entry~~
+- Slap a quote/categories on each page of the journal.
 - Functionality for fully usable on any system? (Directories and such)
-- Slap a quote on to each page of the journal.
+
+Dropped:
+
+- Uses system text editor rather than mousepad?
+  (Not possible, there is no unified way that linux assigns a default text editor.)
