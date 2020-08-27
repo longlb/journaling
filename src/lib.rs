@@ -16,11 +16,15 @@ pub fn run() -> io::Result<()> {
 
     // Change the entry date according to the argument if one is given.
     // If the argument isn't matched, default to the current day.
+    // Ignore everything after the first argument.
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 {
         entry.input(&args[1]);
     }
 
+    // Attach the entry date's items to the path.
+    // I wanted to make this auto, but I fucked up pretty royally.
+    // I'll attempt it again post refactor.
     entry.add_dir(entry.year())?;
     entry.add_dir(entry.month())?;
     entry.add_file(entry.day())?;

@@ -23,16 +23,6 @@ impl Entry {
         }
     }
 
-    // pub fn input(input: &str) -> Self {
-    //     Self {
-    //         // It's possible to use dirs crate for home directory variable rather than hard code.
-    //         // But I'll leave it like this for now, since I'm the only one using it.
-    //         path: PathBuf::from("/home/longlb/Documents/journal"),
-    //         // Default to the day that the command is called.
-    //         date: Local::today(),
-    //     }
-    // }
-
     // Adjust the journal entry date based on the given input.
     pub fn input(&mut self, input: &str) {
         let re = Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
@@ -108,6 +98,8 @@ impl Entry {
     fn random_date(&mut self) -> Date<Local> {
         let mut rng = rand::thread_rng();
 
+        // let mut dir_contents = self.path.read_dir();
+
         let x = self
             .path
             .read_dir()
@@ -128,6 +120,7 @@ impl Entry {
             .unwrap()
             .unwrap()
             .path();
+
         let mut temp = x.components().rev();
 
         let day = temp.next().unwrap().as_os_str().to_str().unwrap();
