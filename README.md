@@ -1,5 +1,7 @@
 # journaling
 
+Done for now since it fits all my needs. May go back if I really want to complete the other tasks.
+
 **Need this in the .bashrc file:**  
 `alias journal="cargo run --manifest-path ~/projects/journaling/Cargo.toml"`
 
