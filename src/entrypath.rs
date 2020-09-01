@@ -73,9 +73,10 @@ impl EntryPath {
     fn attach_ext(&mut self, ext: Ext) -> io::Result<()> {
         self.path.push(ext.contents());
         if !self.path.exists() {
+            println!("not valid {}", self.path.display());
             match ext {
-                Ext::Dir(s) => execute("mkdir", &s)?,
-                Ext::File(s) => execute("touch", &s)?,
+                Ext::Dir(_) => execute("mkdir", self.as_str()?)?,
+                Ext::File(_) => execute("touch", self.as_str()?)?,
             }
         }
         Ok(())
