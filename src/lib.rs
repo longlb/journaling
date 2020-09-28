@@ -24,7 +24,8 @@ pub fn run() -> io::Result<()> {
 
     // Open a text editor to the path with the final entry date.
     // In my case, I use mousepad to journal so I open that.
-    execute("mousepad", entrypath.as_str()?)
+    // Switched to gnome, so I gotta use gedit now.
+    execute("gedit", entrypath.as_str()?)
 }
 
 // Execute a linux command with a single argument.
