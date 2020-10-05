@@ -39,19 +39,19 @@ impl SuperDate {
     // The date's month as a string, converted from a number.
     pub fn month(&self) -> String {
         match self.date.month() {
-            1 => "January",
-            2 => "February",
-            3 => "March",
-            4 => "April",
-            5 => "May",
-            6 => "June",
-            7 => "July",
-            8 => "August",
-            9 => "September",
-            10 => "October",
-            11 => "November",
-            12 => "December",
-            _ => "Not a month",
+            1 => "january",
+            2 => "february",
+            3 => "march",
+            4 => "april",
+            5 => "may",
+            6 => "june",
+            7 => "july",
+            8 => "august",
+            9 => "september",
+            10 => "october",
+            11 => "november",
+            12 => "december",
+            _ => "not a month",
         }
         .to_string()
     }
