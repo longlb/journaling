@@ -1,5 +1,7 @@
 # journaling
 
+DEPRECATED NOW. BEING REWRITTEN IN C TO MATCH LINUX BINARIES.
+
 Done for now since it fits all my needs. May go back if I really want to complete the other tasks.
 
 **Need this in the .bashrc file:**  
